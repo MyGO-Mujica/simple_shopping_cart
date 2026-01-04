@@ -8,11 +8,11 @@ export const useUserStore = defineStore('user', () => {
 
   const isLoggedIn = computed(() => !!token.value)
 
-  function setUserInfo(userToken: string, userName: string, id: string) {
-    token.value = userToken
+  function setUserInfo(userIdToken: string, userName: string, id: string) {
+    token.value = userIdToken
     username.value = userName
     userId.value = id
-    localStorage.setItem('token', userToken)
+    localStorage.setItem('token', userIdToken)
     localStorage.setItem('username', userName)
     localStorage.setItem('userId', id)
   }

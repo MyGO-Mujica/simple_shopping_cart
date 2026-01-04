@@ -38,19 +38,6 @@ const router = createRouter({
   ]
 })
 
-// 路由守卫 - 检查登录状态
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  
-  if (to.meta.requiresAuth && !token) {
-    // 需要登录但未登录，跳转到登录页
-    next('/login')
-  } else if ((to.path === '/login' || to.path === '/register') && token) {
-    // 已登录访问登录页，跳转到商品列表
-    next('/products')
-  } else {
-    next()
-  }
-})
+
 
 export default router
