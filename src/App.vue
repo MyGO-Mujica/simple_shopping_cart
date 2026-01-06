@@ -18,7 +18,7 @@ const handleLogout = () => {
     <el-header v-if="route.path !== '/login' && route.path !== '/register'" class="header">
       <div class="header-content">
         <h2>网上购物系统</h2>
-        <el-menu mode="horizontal" :default-active="route.path" router>
+        <el-menu mode="horizontal" :default-active="route.path" router :ellipsis="false">
           <el-menu-item index="/products">商品列表</el-menu-item>
           <el-menu-item index="/cart">购物车</el-menu-item>
           <el-menu-item index="/orders">我的订单</el-menu-item>
