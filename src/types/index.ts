@@ -9,12 +9,6 @@ export interface RegisterParams {
   password: string
 }
 
-export interface UserInfo {
-  userId: string
-  username: string
-  userIdToken: string // 实际使用userId作为身份标识
-}
-
 // 商品相关类型（后端字段）
 export interface RawProduct {
   id: string
