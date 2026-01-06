@@ -14,10 +14,11 @@ request.interceptors.request.use((config) => config, (error) => Promise.reject(e
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
-    return response.data
+    return response.data  // 自动提取 data，不用每次都写 .data
   },
   (error) => {
     if (error.response) {
+       // 统一错误处理
       ElMessage.error(error.response.data?.message || '请求失败')
     } else {
       
