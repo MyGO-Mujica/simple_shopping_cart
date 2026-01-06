@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getOrderList as getOrderListApi } from '../api/order'
@@ -72,11 +72,18 @@ import type { Order } from '../types'
 
 const router = useRouter()
 const loading = ref(false)
-const orderList = ref<Order[]>([])
+const allOrders = ref<Order[]>([])
 const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const userStore = useUserStore()
+
+// 计算当前页显示的订单列表
+const orderList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return allOrders.value.slice(start, end)
+})
 
 // 获取订单列表
 const getOrderList = async () => {
@@ -90,7 +97,7 @@ const getOrderList = async () => {
   loading.value = true
   try {
     const data = await getOrderListApi(userStore.userId)
-    orderList.value = data
+    allOrders.value = data
     total.value = data.length
   } catch (error: any) {
     ElMessage.error(error?.message || '获取订单列表失败')
@@ -102,10 +109,6 @@ const getOrderList = async () => {
 // 分页
 const handlePageChange = (page: number) => {
   currentPage.value = page
-  // 前端分页处理
-  const start = (page - 1) * pageSize.value
-  const end = start + pageSize.value
-  // 这里可以实现前端分页逻辑
 }
 
 onMounted(() => {
