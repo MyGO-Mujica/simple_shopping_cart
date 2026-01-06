@@ -20,7 +20,7 @@
         <el-row :gutter="20" v-loading="loading">
           <el-col :span="6" v-for="product in pagedProducts" :key="product.id">
             <el-card class="product-card" :body-style="{ padding: '0px' }">
-              <img :src="product.image || defaultImage" class="product-image" />
+              <img :src="product.image" class="product-image" />
               <div class="product-info">
                 <h3>{{ product.name }}</h3>
                 <div class="product-footer">
@@ -56,7 +56,7 @@ import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { Product } from '../types'
 import { getGoodsList } from '../api/goods'
-import { addToCart as addToCartApi } from '../api/cart'
+import { addToCart as addToCartApi, getCartList } from '../api/cart'
 import { useCartStore } from '../stores/cart'
 import { useUserStore } from '../stores/user'
 
@@ -65,7 +65,6 @@ const searchKeyword = ref('')
 const allProducts = ref<Product[]>([])
 const currentPage = ref(1)
 const pageSize = ref(12)
-const defaultImage = 'https://via.placeholder.com/300?text=No+Image'
 const cartStore = useCartStore()
 const userStore = useUserStore()
 
@@ -114,6 +113,7 @@ const addToCart = async (product: Product) => {
 
   try {
     // 调用后端接口添加到购物车
+    // 每次点击都添加一个新的购物车项，允许同一商品有多条记录
     const cartItems = await addToCartApi({
       userId: userStore.userId,
       goodsId: product.id,
@@ -130,9 +130,24 @@ const addToCart = async (product: Product) => {
   }
 }
 
+// 加载购物车数据
+const loadCartData = async () => {
+  if (userStore.isLoggedIn && userStore.userId) {
+    try {
+      const cartItems = await getCartList(userStore.userId)
+      cartStore.setCartItems(cartItems)
+    } catch (error) {
+      // 静默处理错误，不影响商品列表展示
+      console.error('获取购物车数据失败:', error)
+    }
+  }
+}
+
 onMounted(() => {
   getProductList()
+  loadCartData()  
 })
+
 </script>
 
 <style scoped>
